@@ -1,0 +1,45 @@
+version: "3.8"
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: ems-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - ems-network
+
+  backend:
+    build: ./backend
+    container_name: ems-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - MONGO_URI=mongodb+srv://root:<db_password>@cluster0.6uezrf6.mongodb.net/Cluster0?appName=Cluster0
+      - JWT_SECRET=ems-secret
+      - JWT_EXPIRES_IN=1d
+      - NODE_ENV=production
+    depends_on:
+      - mongodb
+    networks:
+      - ems-network
+
+  frontend:
+    build: ./frontend
+    container_name: ems-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - ems-network
+
+volumes:
+  mongo-data:
+
+networks:
+  ems-network:
+    driver: bridge
