@@ -13,6 +13,7 @@ import {
   MenuItem,
   CircularProgress,
   Alert,
+  Snackbar,
 } from "@mui/material";
 import { Employee } from "../types";
 import axiosInstance from "../api/axiosInstance";
@@ -56,6 +57,11 @@ const EmployeeDialog: React.FC<EmployeeDialogProps> = ({
   const [loadingManagers, setLoadingManagers] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [toast, setToast] = useState<{
+    open: boolean;
+    message: string;
+    severity: "success" | "error";
+  }>({ open: false, message: "", severity: "error" });
 
   const isEdit = !!employee;
 
@@ -146,6 +152,7 @@ const EmployeeDialog: React.FC<EmployeeDialogProps> = ({
       });
     }
     setError(null);
+    setToast({ open: false, message: "", severity: "error" });
   }, [employee, reset, open]);
 
   const onSubmit = async (data: EmployeeFormValues) => {
@@ -170,10 +177,11 @@ const EmployeeDialog: React.FC<EmployeeDialogProps> = ({
       onSave();
       onClose();
     } catch (err: any) {
-      setError(
+      const msg =
         err.response?.data?.error ||
-          "An error occurred while saving employee details.",
-      );
+        "An error occurred while saving employee details.";
+      setError(msg);
+      setToast({ open: true, message: msg, severity: "error" });
     } finally {
       setSaving(false);
     }
@@ -191,6 +199,22 @@ const EmployeeDialog: React.FC<EmployeeDialogProps> = ({
               {error}
             </Alert>
           )}
+
+          {/* Toast for errors */}
+          <Snackbar
+            open={toast.open}
+            autoHideDuration={4000}
+            onClose={() => setToast({ ...toast, open: false })}
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          >
+            <Alert
+              onClose={() => setToast({ ...toast, open: false })}
+              severity={toast.severity}
+              sx={{ width: "100%", borderRadius: 2 }}
+            >
+              {toast.message}
+            </Alert>
+          </Snackbar>
 
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
