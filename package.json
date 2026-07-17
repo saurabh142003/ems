@@ -1,0 +1,11 @@
+{
+  "name": "employee-management-system",
+  "version": "1.0.0",
+  "description": "Full-stack Employee Management System",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix backend run dev",
+    "start": "npm run build && node ./backend/dist/server.js",
+    "build": "npm --prefix backend run build && npm --prefix frontend run build"
+  }
+}

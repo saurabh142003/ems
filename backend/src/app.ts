@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import path from "path";
 import { errorHandler } from "./middleware/error.middleware";
 import authRoutes from "./routes/auth.routes";
 import employeeRoutes from "./routes/employee.routes";
@@ -48,6 +49,15 @@ app.use("/api/auth", authRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/organization", organizationRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+
+// Static files - Serve frontend build
+const frontendPath = path.join(__dirname, "../../frontend/dist");
+app.use(express.static(frontendPath));
+
+// Fallback to index.html for React routing
+app.get("*", (req, res) => {
+  res.sendFile(path.join(frontendPath, "index.html"));
+});
 
 // Centralized Error Handler
 app.use(errorHandler);
