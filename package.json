@@ -6,6 +6,6 @@
   "scripts": {
     "dev": "npm --prefix backend run dev",
     "start": "npm run build && node ./backend/dist/server.js",
-    "build": "npm --prefix backend run build && npm --prefix frontend run build"
+    "build": "npm --prefix backend install --include=dev && npm --prefix backend run build && npm --prefix frontend install --include=dev && npm --prefix frontend run build"
   }
 }
