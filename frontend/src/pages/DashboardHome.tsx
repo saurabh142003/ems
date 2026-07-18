@@ -117,12 +117,14 @@ const DashboardHome: React.FC = () => {
       <Grid container spacing={3} sx={{ mb: 4 }}>
         {statCards.map((card) => (
           <Grid item xs={12} sm={6} md={3} key={card.title}>
-            <Card>
+            <Card sx={{ height: "100%" }}>
               <CardContent
                 sx={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
+                  flexDirection: { xs: "row", sm: "column" },
+                  textAlign: { xs: "left", sm: "center" },
                 }}
               >
                 <Box>
@@ -160,16 +162,29 @@ const DashboardHome: React.FC = () => {
 
       <Grid container spacing={3}>
         {/* Department Distribution Bar Chart */}
-        <Grid item xs={12} md={7}>
-          <Paper sx={{ p: 3, borderRadius: 3 }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+        <Grid item xs={12} sm={12} md={7}>
+          <Paper sx={{ p: { xs: 2, sm: 3 }, borderRadius: 3 }}>
+            <Typography
+              variant="h6"
+              sx={{
+                mb: 2,
+                fontWeight: 600,
+                fontSize: { xs: "1rem", sm: "1.25rem" },
+              }}
+            >
               Department Distribution
             </Typography>
-            <Box sx={{ height: 300 }}>
+            <Box sx={{ height: { xs: 250, sm: 300 } }}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={charts.departmentDistribution}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="department" />
+                  <XAxis
+                    dataKey="department"
+                    angle={-45}
+                    textAnchor="end"
+                    height={80}
+                    tick={{ fontSize: 12 }}
+                  />
                   <YAxis />
                   <ChartTooltip />
                   <Bar dataKey="count" fill="#1976d2" radius={[4, 4, 0, 0]} />
@@ -180,13 +195,24 @@ const DashboardHome: React.FC = () => {
         </Grid>
 
         {/* Status Distribution Pie Chart */}
-        <Grid item xs={12} md={5}>
-          <Paper sx={{ p: 3, borderRadius: 3 }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+        <Grid item xs={12} sm={12} md={5}>
+          <Paper sx={{ p: { xs: 2, sm: 3 }, borderRadius: 3 }}>
+            <Typography
+              variant="h6"
+              sx={{
+                mb: 2,
+                fontWeight: 600,
+                fontSize: { xs: "1rem", sm: "1.25rem" },
+              }}
+            >
               Employee Status Distribution
             </Typography>
             <Box
-              sx={{ height: 300, display: "flex", justifyContent: "center" }}
+              sx={{
+                height: { xs: 250, sm: 300 },
+                display: "flex",
+                justifyContent: "center",
+              }}
             >
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -194,8 +220,8 @@ const DashboardHome: React.FC = () => {
                     data={charts.statusDistribution}
                     cx="50%"
                     cy="50%"
-                    innerRadius={60}
-                    outerRadius={90}
+                    innerRadius={40}
+                    outerRadius={75}
                     paddingAngle={5}
                     dataKey="count"
                     nameKey="status"
@@ -217,15 +243,28 @@ const DashboardHome: React.FC = () => {
 
         {/* Monthly Joining Trends */}
         <Grid item xs={12}>
-          <Paper sx={{ p: 3, borderRadius: 3 }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+          <Paper sx={{ p: { xs: 2, sm: 3 }, borderRadius: 3 }}>
+            <Typography
+              variant="h6"
+              sx={{
+                mb: 2,
+                fontWeight: 600,
+                fontSize: { xs: "1rem", sm: "1.25rem" },
+              }}
+            >
               Monthly Joining Trends
             </Typography>
-            <Box sx={{ height: 300 }}>
+            <Box sx={{ height: { xs: 250, sm: 300 } }}>
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={charts.monthlyTrends}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
+                  <XAxis
+                    dataKey="month"
+                    angle={-45}
+                    textAnchor="end"
+                    height={80}
+                    tick={{ fontSize: 12 }}
+                  />
                   <YAxis />
                   <ChartTooltip />
                   <Line

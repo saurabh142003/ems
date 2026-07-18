@@ -15,6 +15,8 @@ import {
   ListItemText,
   Avatar,
   Tooltip,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -34,6 +36,8 @@ const DashboardLayout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useAppDispatch();
+  const theme = useTheme();
+  const isSmUp = useMediaQuery(theme.breakpoints.up("sm"));
   const { user } = useAppSelector((state) => state.auth);
   const { darkMode, sidebarOpen } = useAppSelector((state) => state.ui);
 
@@ -73,6 +77,10 @@ const DashboardLayout: React.FC = () => {
     (item) =>
       !item.allowedRoles || (user && item.allowedRoles.includes(user.role)),
   );
+
+  const handleDrawerToggle = () => {
+    dispatch(toggleSidebar());
+  };
 
   const drawer = (
     <Box>
@@ -118,7 +126,12 @@ const DashboardLayout: React.FC = () => {
           return (
             <ListItem key={item.text} disablePadding>
               <ListItemButton
-                onClick={() => navigate(item.path)}
+                onClick={() => {
+                  navigate(item.path);
+                  if (!isSmUp) {
+                    dispatch(toggleSidebar());
+                  }
+                }}
                 selected={isSelected}
                 sx={{
                   mx: 1,
@@ -178,7 +191,12 @@ const DashboardLayout: React.FC = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ flexGrow: 1, fontSize: { xs: "1rem", sm: "1.25rem" } }}
+          >
             Employee Management System
           </Typography>
 
@@ -186,13 +204,19 @@ const DashboardLayout: React.FC = () => {
             <IconButton
               color="inherit"
               onClick={() => dispatch(toggleDarkMode())}
+              size="small"
             >
               {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
             </IconButton>
           </Tooltip>
 
           <Tooltip title="Logout">
-            <IconButton color="inherit" onClick={handleLogout} sx={{ ml: 1 }}>
+            <IconButton
+              color="inherit"
+              onClick={handleLogout}
+              sx={{ ml: 1 }}
+              size="small"
+            >
               <ExitToAppIcon />
             </IconButton>
           </Tooltip>
@@ -206,6 +230,23 @@ const DashboardLayout: React.FC = () => {
           flexShrink: { sm: 0 },
         }}
       >
+        <Drawer
+          variant="temporary"
+          open={sidebarOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{ keepMounted: true }}
+          sx={{
+            display: { xs: "block", sm: "none" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+              borderRight: "1px solid rgba(0,0,0,0.12)",
+            },
+          }}
+        >
+          {drawer}
+        </Drawer>
+
         <Drawer
           variant="persistent"
           open={sidebarOpen}
@@ -226,7 +267,7 @@ const DashboardLayout: React.FC = () => {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
+          p: { xs: 1.5, sm: 2, md: 3 },
           width: { sm: sidebarOpen ? `calc(100% - ${drawerWidth}px)` : "100%" },
           minHeight: "100vh",
           backgroundColor: "background.default",

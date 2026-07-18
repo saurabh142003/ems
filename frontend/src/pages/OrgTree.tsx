@@ -8,6 +8,8 @@ import {
   IconButton,
   Collapse,
   Paper,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -26,20 +28,21 @@ interface TreeNode {
   children: TreeNode[];
 }
 
-const OrgTreeNode: React.FC<{ node: TreeNode; depth: number }> = ({
-  node,
-  depth,
-}) => {
+const OrgTreeNode: React.FC<{
+  node: TreeNode;
+  depth: number;
+  isSmUp: boolean;
+}> = ({ node, depth, isSmUp }) => {
   const [expanded, setExpanded] = useState(true);
   const hasChildren = node.children && node.children.length > 0;
 
   return (
     <Box
       sx={{
-        ml: depth * 4,
+        ml: isSmUp ? depth * 4 : 0,
         position: "relative",
-        pl: 2,
-        borderLeft: depth > 0 ? "1px dashed #bdbdbd" : "none",
+        pl: isSmUp ? 2 : 0,
+        borderLeft: isSmUp && depth > 0 ? "1px dashed #bdbdbd" : "none",
       }}
     >
       <Card
@@ -48,6 +51,7 @@ const OrgTreeNode: React.FC<{ node: TreeNode; depth: number }> = ({
           alignItems: "center",
           p: 1.5,
           mb: 1.5,
+          width: "100%",
           maxWidth: 450,
           borderRadius: 2,
           boxShadow: "0 2px 8px 0 rgba(0,0,0,0.05)",
@@ -90,7 +94,12 @@ const OrgTreeNode: React.FC<{ node: TreeNode; depth: number }> = ({
         <Collapse in={expanded}>
           <Box sx={{ mt: 1 }}>
             {node.children.map((child) => (
-              <OrgTreeNode key={child.id} node={child} depth={depth + 1} />
+              <OrgTreeNode
+                key={child.id}
+                node={child}
+                depth={depth + 1}
+                isSmUp={isSmUp}
+              />
             ))}
           </Box>
         </Collapse>
@@ -100,6 +109,8 @@ const OrgTreeNode: React.FC<{ node: TreeNode; depth: number }> = ({
 };
 
 const OrgTree: React.FC = () => {
+  const theme = useTheme();
+  const isSmUp = useMediaQuery(theme.breakpoints.up("sm"));
   const [treeData, setTreeData] = useState<TreeNode[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -160,7 +171,12 @@ const OrgTree: React.FC = () => {
       <Paper sx={{ p: 4, borderRadius: 3, minHeight: "60vh" }}>
         {treeData.length > 0 ? (
           treeData.map((rootNode) => (
-            <OrgTreeNode key={rootNode.id} node={rootNode} depth={0} />
+            <OrgTreeNode
+              key={rootNode.id}
+              node={rootNode}
+              depth={0}
+              isSmUp={isSmUp}
+            />
           ))
         ) : (
           <Typography color="text.secondary" align="center" sx={{ py: 6 }}>

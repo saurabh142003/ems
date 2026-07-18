@@ -20,6 +20,9 @@ import {
   Snackbar,
   Alert,
   Tooltip,
+  useTheme,
+  useMediaQuery,
+  Stack,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
@@ -43,6 +46,8 @@ const DEPARTMENTS = [
 ];
 
 const EmployeeList: React.FC = () => {
+  const theme = useTheme();
+  const isSmUp = useMediaQuery(theme.breakpoints.up("sm"));
   const { user: currentUser } = useAppSelector((state) => state.auth);
 
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -218,15 +223,24 @@ const EmployeeList: React.FC = () => {
       <Box
         sx={{
           display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
           justifyContent: "space-between",
-          alignItems: "center",
+          alignItems: { xs: "stretch", sm: "center" },
           mb: 3,
+          gap: 2,
         }}
       >
         <Typography variant="h4" sx={{ fontWeight: 700 }}>
           Employee Directory
         </Typography>
-        <Box sx={{ display: "flex", gap: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 2,
+            justifyContent: { xs: "stretch", sm: "flex-end" },
+          }}
+        >
           {currentUser?.role === "Super Admin" && (
             <Button
               variant="outlined"
@@ -325,131 +339,218 @@ const EmployeeList: React.FC = () => {
 
       {/* Table Paper */}
       <Paper sx={{ width: "100%", overflow: "hidden", borderRadius: 3 }}>
-        <TableContainer sx={{ maxHeight: "65vh" }}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                <TableCell />
-                <TableCell
-                  onClick={() => handleSort("employeeId")}
-                  style={{ cursor: "pointer", fontWeight: 600 }}
-                >
-                  Employee ID{" "}
-                  {sortBy === "employeeId" ? (order === "asc" ? "▲" : "▼") : ""}
-                </TableCell>
-                <TableCell
-                  onClick={() => handleSort("name")}
-                  style={{ cursor: "pointer", fontWeight: 600 }}
-                >
-                  Name {sortBy === "name" ? (order === "asc" ? "▲" : "▼") : ""}
-                </TableCell>
-                <TableCell style={{ fontWeight: 600 }}>Email</TableCell>
-                <TableCell style={{ fontWeight: 600 }}>Phone</TableCell>
-                <TableCell style={{ fontWeight: 600 }}>Department</TableCell>
-                <TableCell style={{ fontWeight: 600 }}>Designation</TableCell>
-                <TableCell style={{ fontWeight: 600 }}>Role</TableCell>
-                <TableCell style={{ fontWeight: 600 }}>Status</TableCell>
-                <TableCell style={{ fontWeight: 600 }}>
-                  Reporting Manager
-                </TableCell>
-                {currentUser &&
-                  ["Super Admin", "HR Manager"].includes(currentUser.role) && (
-                    <TableCell align="center" style={{ fontWeight: 600 }}>
-                      Actions
+        {isSmUp ? (
+          <>
+            <TableContainer sx={{ maxHeight: "65vh", overflowX: "auto" }}>
+              <Table stickyHeader aria-label="sticky table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell />
+                    <TableCell
+                      onClick={() => handleSort("employeeId")}
+                      style={{ cursor: "pointer", fontWeight: 600 }}
+                    >
+                      Employee ID{" "}
+                      {sortBy === "employeeId"
+                        ? order === "asc"
+                          ? "▲"
+                          : "▼"
+                        : ""}
                     </TableCell>
-                  )}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {employees.map((row) => (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
-                  <TableCell>
-                    <Avatar src={row.profileImage} alt={row.name}>
-                      {row.name.charAt(0)}
-                    </Avatar>
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>
-                    {row.employeeId}
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>{row.name}</TableCell>
-                  <TableCell>{row.email}</TableCell>
-                  <TableCell>{row.phone}</TableCell>
-                  <TableCell>{row.department}</TableCell>
-                  <TableCell>{row.designation}</TableCell>
-                  <TableCell>{row.role}</TableCell>
-                  <TableCell>
-                    <Chip
-                      label={row.status}
-                      color={getStatusChipColor(row.status)}
-                      size="small"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    {row.manager ? row.manager.name : "N/A"}
-                  </TableCell>
-                  {currentUser &&
-                    ["Super Admin", "HR Manager"].includes(
-                      currentUser.role,
-                    ) && (
-                      <TableCell align="center">
-                        <Box
-                          sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            gap: 1,
-                          }}
-                        >
-                          <Tooltip title="Edit Employee">
-                            <IconButton
-                              size="small"
-                              color="primary"
-                              onClick={() => handleEditEmployee(row)}
-                              disabled={
-                                currentUser.role === "HR Manager" &&
-                                row.role === "Super Admin"
-                              }
-                            >
-                              <EditIcon fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                          {currentUser.role === "Super Admin" && (
-                            <Tooltip title="Delete Employee">
-                              <IconButton
-                                size="small"
-                                color="error"
-                                onClick={() => handleDeleteClick(row)}
-                                disabled={currentUser._id === row._id}
-                              >
-                                <DeleteIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                          )}
-                        </Box>
+                    <TableCell
+                      onClick={() => handleSort("name")}
+                      style={{ cursor: "pointer", fontWeight: 600 }}
+                    >
+                      Name{" "}
+                      {sortBy === "name" ? (order === "asc" ? "▲" : "▼") : ""}
+                    </TableCell>
+                    <TableCell style={{ fontWeight: 600 }}>Email</TableCell>
+                    <TableCell style={{ fontWeight: 600 }}>Phone</TableCell>
+                    <TableCell style={{ fontWeight: 600 }}>
+                      Department
+                    </TableCell>
+                    <TableCell style={{ fontWeight: 600 }}>
+                      Designation
+                    </TableCell>
+                    <TableCell style={{ fontWeight: 600 }}>Role</TableCell>
+                    <TableCell style={{ fontWeight: 600 }}>Status</TableCell>
+                    <TableCell style={{ fontWeight: 600 }}>
+                      Reporting Manager
+                    </TableCell>
+                    {currentUser &&
+                      ["Super Admin", "HR Manager"].includes(
+                        currentUser.role,
+                      ) && (
+                        <TableCell align="center" style={{ fontWeight: 600 }}>
+                          Actions
+                        </TableCell>
+                      )}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {employees.map((row) => (
+                    <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
+                      <TableCell>
+                        <Avatar src={row.profileImage} alt={row.name}>
+                          {row.name.charAt(0)}
+                        </Avatar>
                       </TableCell>
-                    )}
-                </TableRow>
-              ))}
-              {employees.length === 0 && !loading && (
-                <TableRow>
-                  <TableCell colSpan={11} align="center" sx={{ py: 6 }}>
-                    <Typography color="text.secondary">
-                      No employees found matching the filters.
-                    </Typography>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25, 50]}
-          component="div"
-          count={totalCount}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
+                      <TableCell sx={{ fontWeight: 600 }}>
+                        {row.employeeId}
+                      </TableCell>
+                      <TableCell sx={{ fontWeight: 600 }}>{row.name}</TableCell>
+                      <TableCell>{row.email}</TableCell>
+                      <TableCell>{row.phone}</TableCell>
+                      <TableCell>{row.department}</TableCell>
+                      <TableCell>{row.designation}</TableCell>
+                      <TableCell>{row.role}</TableCell>
+                      <TableCell>
+                        <Chip
+                          label={row.status}
+                          color={getStatusChipColor(row.status)}
+                          size="small"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        {row.manager ? row.manager.name : "N/A"}
+                      </TableCell>
+                      {currentUser &&
+                        ["Super Admin", "HR Manager"].includes(
+                          currentUser.role,
+                        ) && (
+                          <TableCell align="center">
+                            <Box
+                              sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                gap: 1,
+                              }}
+                            >
+                              <Tooltip title="Edit Employee">
+                                <IconButton
+                                  size="small"
+                                  color="primary"
+                                  onClick={() => handleEditEmployee(row)}
+                                  disabled={
+                                    currentUser.role === "HR Manager" &&
+                                    row.role === "Super Admin"
+                                  }
+                                >
+                                  <EditIcon fontSize="small" />
+                                </IconButton>
+                              </Tooltip>
+                              {currentUser.role === "Super Admin" && (
+                                <Tooltip title="Delete Employee">
+                                  <IconButton
+                                    size="small"
+                                    color="error"
+                                    onClick={() => handleDeleteClick(row)}
+                                    disabled={currentUser._id === row._id}
+                                  >
+                                    <DeleteIcon fontSize="small" />
+                                  </IconButton>
+                                </Tooltip>
+                              )}
+                            </Box>
+                          </TableCell>
+                        )}
+                    </TableRow>
+                  ))}
+                  {employees.length === 0 && !loading && (
+                    <TableRow>
+                      <TableCell colSpan={11} align="center" sx={{ py: 6 }}>
+                        <Typography color="text.secondary">
+                          No employees found matching the filters.
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25, 50]}
+              component="div"
+              count={totalCount}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </>
+        ) : (
+          <Box sx={{ p: 2, display: "flex", flexDirection: "column", gap: 2 }}>
+            {employees.map((row) => (
+              <Paper key={row._id} sx={{ p: 2, borderRadius: 3 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start",
+                    gap: 2,
+                  }}
+                >
+                  <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+                    <Avatar src={row.profileImage} alt={row.name} />
+                    <Box>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                        {row.name}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {row.employeeId}
+                      </Typography>
+                    </Box>
+                  </Box>
+                  <Chip
+                    label={row.status}
+                    color={getStatusChipColor(row.status)}
+                    size="small"
+                  />
+                </Box>
+                <Box sx={{ mt: 2, display: "grid", gap: 1 }}>
+                  <Typography variant="body2">
+                    <strong>Email:</strong> {row.email}
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Phone:</strong> {row.phone}
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Department:</strong> {row.department}
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Designation:</strong> {row.designation}
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Role:</strong> {row.role}
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Manager:</strong>{" "}
+                    {row.manager ? row.manager.name : "N/A"}
+                  </Typography>
+                </Box>
+                <Box sx={{ mt: 2, display: "flex", gap: 1, flexWrap: "wrap" }}>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={() => handleEditEmployee(row)}
+                  >
+                    Edit
+                  </Button>
+                  {currentUser?.role === "Super Admin" && (
+                    <Button
+                      size="small"
+                      variant="contained"
+                      color="error"
+                      onClick={() => handleDeleteClick(row)}
+                    >
+                      Delete
+                    </Button>
+                  )}
+                </Box>
+              </Paper>
+            ))}
+          </Box>
+        )}
       </Paper>
 
       {/* Add / Edit Dialog */}

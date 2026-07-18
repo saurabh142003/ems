@@ -65,24 +65,32 @@ const Login: React.FC = () => {
     <Container maxWidth="xs">
       <Box
         sx={{
-          marginTop: 12,
+          marginTop: { xs: 4, sm: 8, md: 12 },
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          px: { xs: 2, sm: 0 },
         }}
       >
-        <Card sx={{ width: "100%", p: 2 }}>
-          <CardContent>
+        <Card sx={{ width: "100%", p: { xs: 1.5, sm: 2 } }}>
+          <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
             <Box sx={{ mb: 3, textAlign: "center" }}>
               <Typography
                 variant="h4"
                 color="primary"
                 gutterBottom
-                sx={{ fontWeight: 700 }}
+                sx={{
+                  fontWeight: 700,
+                  fontSize: { xs: "1.75rem", sm: "2.125rem" },
+                }}
               >
                 EMS
               </Typography>
-              <Typography variant="subtitle1" color="text.secondary">
+              <Typography
+                variant="subtitle1"
+                color="text.secondary"
+                sx={{ fontSize: { xs: "0.875rem", sm: "1rem" } }}
+              >
                 Employee Management System
               </Typography>
             </Box>
@@ -103,6 +111,7 @@ const Login: React.FC = () => {
                 autoFocus
                 error={!!errors.email}
                 helperText={errors.email?.message}
+                size="small"
               />
               <TextField
                 {...register("password")}
@@ -113,12 +122,14 @@ const Login: React.FC = () => {
                 autoComplete="current-password"
                 error={!!errors.password}
                 helperText={errors.password?.message}
+                size="small"
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton
                         onClick={() => setShowPassword(!showPassword)}
                         edge="end"
+                        size="small"
                       >
                         {showPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>

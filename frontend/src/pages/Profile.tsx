@@ -102,13 +102,16 @@ const Profile: React.FC = () => {
 
       <Grid container spacing={4}>
         {/* Profile Card */}
-        <Grid item xs={12} md={4}>
-          <Card sx={{ p: 2, textAlign: "center", height: "100%" }}>
+        <Grid item xs={12} sm={12} md={4}>
+          <Card
+            sx={{ p: { xs: 1, sm: 2 }, textAlign: "center", height: "100%" }}
+          >
             <CardContent
               sx={{
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
+                p: { xs: 2, sm: 3 },
               }}
             >
               <Avatar
@@ -170,8 +173,17 @@ const Profile: React.FC = () => {
 
         {/* Edit Profile Form */}
         <Grid item xs={12} md={8}>
-          <Paper sx={{ p: 4, borderRadius: 3, height: "100%" }}>
-            <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
+          <Paper
+            sx={{ p: { xs: 2, sm: 3, md: 4 }, borderRadius: 3, height: "100%" }}
+          >
+            <Typography
+              variant="h6"
+              sx={{
+                mb: 3,
+                fontWeight: 600,
+                fontSize: { xs: "1rem", sm: "1.25rem" },
+              }}
+            >
               Edit Profile Settings
             </Typography>
 
